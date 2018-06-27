@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{%- set os         = salt['grains.get']('os') %}
+{%- set osrelease  = salt['grains.get']('osrelease') %}
+{%- set oscodename = salt['grains.get']('oscodename') %}
+
+{## Start with defaults from defaults.yaml ##}
+{% import_yaml 'devpi/defaults.yaml' as default_settings %}
+
+{##
+Setup variables using grains['os_family'] based logic, only add key:values
+that differ from what is in defaults.yaml
+##}
+{% set os_family_map = salt['grains.filter_by']({
+    'Debian': {
+        'pkgs': ['devpi-server', 'devpi-web'],
+        'service': 'devpi',
+        'user': 'devpi',
+        'group': 'devpi',
+        'serverdir': '/var/lib/devpi',
+    },
+}
+, grain="os_family"
+, merge=salt['pillar.get']('devpi:lookup')) %}
+
+{## Merge the flavor_map to the default settings ##}
+{% do default_settings.devpi.update(os_family_map) %}
+
+{## Merge in devpi:lookup pillar ##}
+{% set devpi = salt['pillar.get'](
+        'devpi',
+        default=default_settings.devpi,
+        merge=True
+    )
+%}

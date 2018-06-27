@@ -1,0 +1,5 @@
+devpi:
+  serverdir: /var/lib/devpi
+  host: 0.0.0.0
+  port: 3141
+  threads: 4

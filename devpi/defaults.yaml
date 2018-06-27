@@ -1,0 +1,10 @@
+devpi:
+  python:
+    version: False
+    pip:
+      no_index: False
+  manage_user: True
+  service_enabled: True
+  host: 0.0.0.0
+  port: 3141
+  threads: 2 

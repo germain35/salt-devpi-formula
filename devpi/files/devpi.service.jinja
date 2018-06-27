@@ -1,0 +1,12 @@
+{%- from "devpi/map.jinja" import devpi with context -%}
+[Unit]
+Description=PyPI server and packaging/testing/release tool
+After=network.target
+
+[Service]
+User={{devpi.user}}
+Type=forking
+ExecStart=/usr/local/bin/devpi-server --start --host={{devpi.host}} --port={{devpi.port}} --threads {{devpi.threads}} --serverdir={{devpi.serverdir}}
+
+[Install]
+WantedBy=multi-user.target
